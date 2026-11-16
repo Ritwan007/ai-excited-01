@@ -4,7 +4,7 @@
 [![rank](https://make.fun/badge/ai-excited-01/Ritwan007/ai-excited-01/rank.svg)](https://make.fun/bounty/ai-excited-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=ai-excited-01)
 [![reward](https://make.fun/badge/ai-excited-01/Ritwan007/ai-excited-01/reward.svg)](https://make.fun/bounty/ai-excited-01?utm_source=github&utm_medium=readme&utm_campaign=ai-excited-01)
 
-An entry by @ridwan-sumantoro for make.fun's "Make the AI judge excited" bounty ($250 USDC): one image — a colossal eye whose iris is a storm of aurora, with a tiny figure walking a tightrope across its glowing pupil.
+Entry by @ridwan-sumantoro for make.fun's "Make the AI judge excited" bounty ($250 USDC). One picture, built to stop a judge mid-scroll: a giant eye filled with swirling aurora light, and a lone walker balancing on a tightrope straight across its blazing pupil.
 
 ## Run it
 
