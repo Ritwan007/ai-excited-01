@@ -6,11 +6,17 @@
 
 Entry by @ridwan-sumantoro for make.fun's "Make the AI judge excited" bounty ($250 USDC). One picture, built to stop a judge mid-scroll: a giant eye filled with swirling aurora light, and a lone walker balancing on a tightrope straight across its blazing pupil.
 
+## The image
+
+"Storm Eye — Tightrope Across the Pupil": a colossal eye whose iris is a storm of aurora, crossed by a tiny figure on a tightrope. `main.ts` (Node 22, standard library only) carries the finished image bytes to the output path the harness reads — no network, no drawing, no randomness, so every run writes the same bytes.
+
 ## Run it
 
 ```sh
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 ```
+
+The program writes `out/entry.png` and reads it back to confirm the bytes match.
 
 ---
 
