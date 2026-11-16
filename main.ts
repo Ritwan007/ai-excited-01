@@ -1,63 +1,67 @@
 // Storm Eye — entry for make.fun's "Make the AI judge excited" (ai-excited-01).
 //
-// The artwork is a single finished frame: a vast eye whose iris is a
-// swirling aurora storm, with a tiny figure crossing the bright pupil on
-// a tightrope. This script's job is deliberately small — carry that
-// image's exact bytes from this repo to the place the grading harness
-// looks for them, and prove the copy came through faithfully.
+// The artwork is one finished frame: a vast eye whose iris is a swirling
+// aurora storm, with a tiny figure crossing the blazing pupil on a
+// tightrope. This program does not draw anything. It carries that
+// image's exact bytes from this repo to the path the grading harness
+// reads, and proves the copy arrived intact.
 //
 // Node 22, standard library only. No network, no image generation, no
-// randomness: run it twice and the output is identical both times.
+// randomness: run it twice and the output is byte-identical both times.
 
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
+// The finished image, committed in this repo next to this file.
 const SOURCE_FILE = "entry.png";
 
-// The harness reads /output/entry.png. Set MAKEFUN_OUTPUT_DIR to point
+// Where the harness looks: /output/entry.png. Point MAKEFUN_OUTPUT_DIR
 // somewhere else when running locally.
 const OUTPUT_DIR = (process.env.MAKEFUN_OUTPUT_DIR ?? "").trim() || "/output";
 
 // The competition caps an entry at one megabyte.
 const SIZE_LIMIT = 1024 * 1024;
 
-// The opening bytes of a genuine PNG, and of a genuine JPEG. The gate
-// accepts either format.
-const PNG_MAGIC = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
-const JPEG_MAGIC = [0xff, 0xd8];
+// Opening bytes of a genuine PNG, and of a genuine JPEG. Either format
+// passes the gate.
+const MAGIC_BYTES: readonly number[][] = [
+  [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a], // PNG
+  [0xff, 0xd8], // JPEG
+];
 
-function hasPrefix(data: Buffer, prefix: number[]): boolean {
+function startsWith(data: Buffer, prefix: readonly number[]): boolean {
   if (data.length < prefix.length) return false;
-  for (let i = 0; i < prefix.length; i++) {
-    if (data[i] !== prefix[i]) return false;
-  }
-  return true;
+  return prefix.every((byte, i) => data[i] === byte);
 }
 
-function checkImage(data: Buffer): void {
-  if (data.length === 0) throw new Error("entry.png is empty");
-  if (data.length > SIZE_LIMIT) {
-    throw new Error(`entry.png is ${data.length} bytes, over the 1 MiB limit`);
+function validateImage(data: Buffer): void {
+  if (data.length === 0) {
+    throw new Error("entry.png is empty");
   }
-  if (!hasPrefix(data, PNG_MAGIC) && !hasPrefix(data, JPEG_MAGIC)) {
+  if (data.length > SIZE_LIMIT) {
+    throw new Error(
+      `entry.png is ${data.length} bytes, over the 1 MiB limit`,
+    );
+  }
+  if (!MAGIC_BYTES.some((magic) => startsWith(data, magic))) {
     throw new Error("entry.png does not start with PNG or JPEG magic bytes");
   }
 }
 
-function readEntry(): Buffer {
+function loadEntry(): Buffer {
   const folder = dirname(fileURLToPath(import.meta.url));
   const data = readFileSync(join(folder, SOURCE_FILE));
-  checkImage(data);
+  validateImage(data);
   return data;
 }
 
-function destinationPath(): string {
+function outputPath(): string {
   mkdirSync(OUTPUT_DIR, { recursive: true });
   return join(OUTPUT_DIR, SOURCE_FILE);
 }
 
-function confirmCopy(path: string, expected: Buffer): void {
+function verifyWritten(path: string, expected: Buffer): void {
   // The harness runs this program twice and expects byte-identical
   // output both times, so a truncated or corrupted write has to fail
   // here loudly instead of slipping through unnoticed.
@@ -69,12 +73,12 @@ function confirmCopy(path: string, expected: Buffer): void {
   }
 }
 
-function run(): void {
-  const data = readEntry();
-  const path = destinationPath();
+function main(): void {
+  const data = loadEntry();
+  const path = outputPath();
   writeFileSync(path, data);
-  confirmCopy(path, data);
+  verifyWritten(path, data);
   console.log(`wrote ${path} (${data.length} bytes)`);
 }
 
-run();
+main();
