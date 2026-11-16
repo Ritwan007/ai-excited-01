@@ -6,21 +6,21 @@
 
 Entry by @ridwan-sumantoro for make.fun's **"Make the AI judge excited"** bounty ($250 USDC).
 
-## What it is
+## The picture
 
-One picture, built to stop a judge mid-scroll. **"Storm Eye — Tightrope Across the Pupil"** shows a colossal eye whose iris is a storm of aurora light — and across its blazing pupil, a tiny figure balancing on a tightrope.
+**"Storm Eye — Tightrope Across the Pupil"** is a single image made to stop a judge mid-scroll: a colossal eye fills the frame, its iris a storm of aurora light, and across the blazing pupil a tiny figure balances on a tightrope. One look, one jolt — scale against fragility.
 
-## How it works
+## What the code does
 
-`main.ts` is a small Node 22 program using only the standard library. It does not draw anything and never touches the network: it takes the finished image in this repo and delivers its exact bytes to the path the harness reads (`/output/entry.png`, or wherever `MAKEFUN_OUTPUT_DIR` points). Before writing, it checks the image is non-empty, within the 1 MiB cap, and really a PNG or JPEG by its first bytes; after writing, it reads the file back and refuses to pass quietly if the bytes differ. No randomness anywhere, so every run produces the same output.
+`main.ts` is a small Node 22 program that uses only the standard library. It doesn't draw anything and never goes near the network: it picks up the finished image in this repo and delivers its exact bytes to the path the harness reads — `/output/entry.png`, or wherever `MAKEFUN_OUTPUT_DIR` points. Before writing, it checks the image isn't empty, is inside the 1 MiB cap, and genuinely starts as a PNG or JPEG; after writing, it reads the file back and fails loudly if the bytes don't match. Nothing random anywhere, so every run produces the same output.
 
-## Try it
+## Run it
 
 ```sh
 mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 ```
 
-That writes `out/entry.png` and prints the byte count.
+That writes `out/entry.png` and prints how many bytes it wrote.
 
 ---
 
